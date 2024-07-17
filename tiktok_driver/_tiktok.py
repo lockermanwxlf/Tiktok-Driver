@@ -26,7 +26,7 @@ class TiktokResult:
     async def get_posts(self) -> list[TiktokPost]:
         try:
             a_elements = await self.__tab.select_all(f'[href^="https://www.tiktok.com/@{self.__username}/"]', timeout=3)
-            hrefs = [str(element.attrs['href']) for element in a_elements]
+            hrefs = list(set([str(element.attrs['href']) for element in a_elements]))
             pairs = map(lambda href: (href, match(self.__pattern, href).groups()), hrefs)
             return [TiktokPost(pair[0], pair[1][0]) for pair in pairs if pair[1] and len(pair[1]) > 0]
         except TimeoutError:
